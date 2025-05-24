@@ -1,1 +1,3 @@
 # goontapl
+
+/ is integer divison

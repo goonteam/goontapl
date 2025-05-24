@@ -67,6 +67,42 @@ fn main() {
             }
         }
 
+        else if contents.chars().nth(i as usize) == Some('+') {
+            let one_side = &q[0].downcast_ref::<i32>().unwrap();
+            let other_side = &q[1].downcast_ref::<i32>().unwrap();
+
+            let sum = *one_side + *other_side;
+
+            q.push_front(Box::new(sum))
+        }
+
+        else if contents.chars().nth(i as usize) == Some('-') {
+            let one_side = &q[0].downcast_ref::<i32>().unwrap();
+            let other_side = &q[1].downcast_ref::<i32>().unwrap();
+
+            let sum = -*one_side + *other_side;
+
+            q.push_front(Box::new(sum))
+        }
+
+        else if contents.chars().nth(i as usize) == Some('*') {
+            let one_side = &q[0].downcast_ref::<i32>().unwrap();
+            let other_side = &q[1].downcast_ref::<i32>().unwrap();
+
+            let sum = *one_side * *other_side;
+
+            q.push_front(Box::new(sum))
+        }
+
+        else if contents.chars().nth(i as usize) == Some('/') {
+            let one_side = &q[0].downcast_ref::<i32>().unwrap();
+            let other_side = &q[1].downcast_ref::<i32>().unwrap();
+
+            let sum = *other_side / *one_side;
+
+            q.push_front(Box::new(sum))
+        }
+
         i += 1;
     }
 }
