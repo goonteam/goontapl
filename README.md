@@ -1,1 +1,1 @@
-"# goontapl" 
+# goontapl
