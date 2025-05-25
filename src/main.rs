@@ -4,6 +4,7 @@ use std::fs;
 use std::collections::VecDeque;
 use std::any::{Any};
 use std::process;
+use std::io::{self, Write};
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -101,6 +102,103 @@ fn main() {
             let sum = *other_side / *one_side;
 
             q.push_front(Box::new(sum))
+        }
+
+        else if contents.chars().nth(i as usize) == Some('j') {
+            let first: &Box<dyn Any> = q.get(0).unwrap();
+            let second: &Box<dyn Any> = q.get(1).unwrap();
+
+            // Convert both to strings (gpt gave me this)
+            let s1 = if let Some(s) = first.downcast_ref::<String>() {
+                s.clone()
+            } else if let Some(n) = first.downcast_ref::<i32>() {
+                n.to_string()
+            } else {
+                String::from("[unknown]")
+            };
+
+            let s2 = if let Some(s) = second.downcast_ref::<String>() {
+                s.clone()
+            } else if let Some(n) = second.downcast_ref::<i32>() {
+                n.to_string()
+            } else {
+                String::from("[unknown]")
+            };
+
+            let combined = s2 + &s1;
+
+            q.push_front(Box::new(combined));
+
+        }
+
+        else if contents.chars().nth(i as usize) == Some('r') {
+            let first: &Box<dyn Any> = q.get(0).unwrap();
+            let second: &Box<dyn Any> = q.get(1).unwrap();
+
+            // Convert both to strings (gpt gave me this)
+            let s1 = if let Some(s) = first.downcast_ref::<String>() {
+                s.clone()
+            } else if let Some(n) = first.downcast_ref::<i32>() {
+                n.to_string()
+            } else {
+                String::from("[unknown]")
+            };
+
+            let s2 = if let Some(s) = second.downcast_ref::<String>() {
+                s.clone()
+            } else if let Some(n) = second.downcast_ref::<i32>() {
+                n.to_string()
+            } else {
+                String::from("[unknown]")
+            };
+
+            let combined = s1 + &s2;
+
+            q.push_front(Box::new(combined));
+
+        }
+
+        else if contents.chars().nth(i as usize) == Some('i') {
+            let prompt = if let Some(s) = q.get(0).and_then(|v| v.downcast_ref::<String>()) {
+                s.clone()
+            } else if let Some(n) = q.get(0).and_then(|v| v.downcast_ref::<i32>()) {
+                n.to_string()
+            } else {
+                "[unknown]".to_string()
+            };
+
+            print!("{}", prompt);
+            io::stdout().flush().unwrap();
+
+            let mut user_input = String::new();
+            io::stdin().read_line(&mut user_input).unwrap();
+
+            // Trim newline and push
+            let input_str = user_input.trim().to_string();
+            q.push_front(Box::new(input_str));
+        }
+
+        else if contents.chars().nth(i as usize) == Some('t') {
+            // Get the index from q[0]
+            let idx = if let Some(n) = q.get(0).and_then(|v| v.downcast_ref::<i32>()) {
+                *n as usize
+            } else if let Some(s) = q.get(0).and_then(|v| v.downcast_ref::<String>()) {
+                s.parse::<usize>().expect("Invalid index string")
+            } else {
+                panic!("Expected i32 or String index at q[0]");
+            };
+
+            // Get the value at that index
+            let item = q.get(idx).expect("Index out of bounds");
+
+            // Clone it before pushing (since Box<dyn Any> isn't copyable)
+            if let Some(s) = item.downcast_ref::<String>() {
+                q.push_front(Box::new(s.clone()));
+            } else if let Some(n) = item.downcast_ref::<i32>() {
+                q.push_front(Box::new(*n));
+            } else {
+                panic!("Unsupported type at q[{}]", idx);
+            }
         }
 
         i += 1;
