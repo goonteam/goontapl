@@ -1,3 +1,5 @@
 [1] [1] > [12]:"its true"p "its false"p
 
-{print("test")}
+{
+    os.execute("echo hi from lua ish")
+}
