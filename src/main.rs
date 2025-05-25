@@ -6,6 +6,11 @@ use std::any::{Any};
 use std::process;
 use std::io::{self, Write};
 
+use rlua::{Lua, Result};
+
+fn execute_lua_code(code: String) { // test function for now
+    println!("lua code: {}", code);
+}
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -52,6 +57,19 @@ fn main() {
                 process::exit(101);
             }
             
+            
+            i = j;
+        }
+
+        else if contents.chars().nth(i as usize) == Some('{') { // for lua
+            let mut j = i;
+            while contents.chars().nth(j as usize) != Some('}') {
+                j += 1;
+            }
+
+            let code_str: String = contents.chars().skip((i + 1) as usize).take((j - i - 1) as usize).collect();
+            
+            execute_lua_code(code_str);
             
             i = j;
         }
