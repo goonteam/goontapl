@@ -6,10 +6,13 @@ use std::any::{Any};
 use std::process;
 use std::io::{self, Write};
 
-use rlua::{Lua, Result};
+use mlua::{Lua, Result};
 
-fn execute_lua_code(code: String) { // test function for now
-    println!("lua code: {}", code);
+fn execute_lua_code(code: String) -> Result<()> { // test function for now
+    let lua = Lua::new();
+
+    // Load a Lua chunk from a string and execute it
+    lua.load(&code).exec()
 }
 
 fn main() {
@@ -69,7 +72,7 @@ fn main() {
 
             let code_str: String = contents.chars().skip((i + 1) as usize).take((j - i - 1) as usize).collect();
             
-            execute_lua_code(code_str);
+            let _ = execute_lua_code(code_str);
             
             i = j;
         }
