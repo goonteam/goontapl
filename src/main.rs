@@ -201,6 +201,93 @@ fn main() {
             }
         }
 
+        else if contents.chars().nth(i as usize) == Some('>') {
+            let left = q.get(0)
+                .and_then(|v| v.downcast_ref::<i32>())
+                .expect("I expected an integer");
+
+            let right = q.get(1)
+                .and_then(|v| v.downcast_ref::<i32>())
+                .expect("I expected an integer");
+
+            let result = *right > *left;
+            if result == true {
+                q.push_front(Box::new(String::from("True")));
+            } else {
+                q.push_front(Box::new(String::from("False")));
+            }
+        }
+
+        else if contents.chars().nth(i as usize) == Some('<') {
+            let left = q.get(0)
+                .and_then(|v| v.downcast_ref::<i32>())
+                .expect("I expected an integer");
+
+            let right = q.get(1)
+                .and_then(|v| v.downcast_ref::<i32>())
+                .expect("I expected an integer");
+
+            let result = *right < *left;
+            if result == true {
+                q.push_front(Box::new(String::from("True")));
+            } else {
+                q.push_front(Box::new(String::from("False")));
+            }
+        }
+
+        else if contents.chars().nth(i as usize) == Some('=') {
+            let s1 = if let Some(s) = q.get(0).and_then(|v| v.downcast_ref::<String>()) {
+                s.clone()
+            } else if let Some(n) = q.get(0).and_then(|v| v.downcast_ref::<i32>()) {
+                n.to_string()
+            } else {
+                "[unknown]".to_string()
+            };
+
+            let s2 = if let Some(s) = q.get(1).and_then(|v| v.downcast_ref::<String>()) {
+                s.clone()
+            } else if let Some(n) = q.get(1).and_then(|v| v.downcast_ref::<i32>()) {
+                n.to_string()
+            } else {
+                "[unknown]".to_string()
+            };
+
+            let result = *s1 == *s2;
+            if result == true {
+                q.push_front(Box::new(String::from("True")));
+            } else {
+                q.push_front(Box::new(String::from("False")));
+            }
+        }
+
+        else if contents.chars().nth(i as usize) == Some(':') {
+            let thing = q.get(1)
+                .and_then(|v| v.downcast_ref::<String>())
+                .expect("it should have been a (boolean) string");
+
+            let number = q.get(0)
+                .and_then(|v| v.downcast_ref::<i32>())
+                .expect("There should be a number before");
+
+            if thing == "False" {
+                i += *number as u32;
+            }
+        }
+
+        else if contents.chars().nth(i as usize) == Some(':') {
+            let thing = q.get(1)
+                .and_then(|v| v.downcast_ref::<String>())
+                .expect("it should have been a (boolean) string");
+
+            let number = q.get(0)
+                .and_then(|v| v.downcast_ref::<i32>())
+                .expect("There should be a number before");
+
+            if thing == "True" {
+                i += *number as u32;
+            }
+        }
+
         i += 1;
     }
 }
